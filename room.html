@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>room</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: white;
+        font-family: "Courier New", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
+      import { AsciiEffect } from "three/addons/effects/AsciiEffect.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+      let camera, scene, renderer, effect, controls;
+      const keys = {};
+      let asciiEnabled = true;
+
+      init();
+      animate();
+
+      function init() {
+        // --- Scene ---
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+
+        // --- Camera ---
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        camera.position.set(20, 10, 30);
+
+        // --- Lights ---
+
+        // Camera light to illuminate nearby objects
+        const cameraLight = new THREE.PointLight(0xffffff, 3, 200, 2);
+        camera.add(cameraLight);
+        cameraLight.position.set(0, 0, 0);
+
+        // Harsh directional sunlight
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+        sunLight.position.set(0, 50, 0);
+        scene.add(sunLight);
+
+        const sunLight1 = new THREE.DirectionalLight(0xffffff, 2);
+        sunLight1.position.set(100, -100, 100);
+        scene.add(sunLight1);
+
+        // Ambient fill light
+        const ambient = new THREE.AmbientLight(0x333333);
+        scene.add(ambient);
+
+        // --- FLOOR ---
+        const floorSize = 60;
+        const floorGeo = new THREE.PlaneGeometry(floorSize, floorSize);
+        const floorMat = new THREE.MeshStandardMaterial({
+          color: 0x222222,
+          roughness: 1,
+          metalness: 0,
+        });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2; // make it horizontal
+        floor.position.y = 0;
+        // scene.add(floor);
+
+        // objects in scene
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+          "models/room/wooden_table_02_4k.gltf/wooden_table_02_4k.gltf",
+          (gltf) => {
+            const table = gltf.scene;
+            table.scale.setScalar(8);
+            table.position.set(0, 0, 0);
+            scene.add(table);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/gothic_coffee_table_4k.gltf/gothic_coffee_table_4k.gltf",
+          (gltf) => {
+            const table = gltf.scene;
+            table.scale.setScalar(8);
+            table.position.set(40, 0, 0);
+            scene.add(table);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/Sofa_01_4k.gltf/Sofa_01_4k.gltf",
+          (gltf) => {
+            const sofa = gltf.scene;
+            sofa.scale.setScalar(15);
+            sofa.position.set(40, 0, -15);
+            scene.add(sofa);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/round_wooden_table_02_4k.gltf/round_wooden_table_02_4k.gltf",
+          (gltf) => {
+            const table = gltf.scene;
+            table.scale.setScalar(10);
+            table.position.set(60, 0, -15);
+            scene.add(table);
+          }
+        );
+
+        // gltfLoader.load(
+        //   "models/ornate_mirror_01_4k.gltf/ornate_mirror_01_4k.gltf",
+        //   (gltf) => {
+        //     const mirror = gltf.scene;
+        //     mirror.scale.setScalar(15);
+        //     mirror.position.set(40, 20, -20);
+        //     scene.add(mirror);
+        //   }
+        // );
+
+        gltfLoader.load(
+          "models/room/fancy_picture_frame_01_4k.gltf/fancy_picture_frame_01_4k.gltf",
+          (gltf) => {
+            const picture = gltf.scene;
+            picture.scale.setScalar(20);
+            picture.position.set(40, 20, -20);
+            scene.add(picture);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/GreenChair_01_4k.gltf/GreenChair_01_4k.gltf",
+          (gltf) => {
+            const sofa = gltf.scene;
+            sofa.scale.setScalar(10);
+            sofa.position.set(55, 0, 0);
+            sofa.rotation.y = (Math.PI / 2) * 3;
+            scene.add(sofa);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/painted_wooden_chair_02_4k.gltf/painted_wooden_chair_02_4k.gltf",
+          (gltf) => {
+            const chair = gltf.scene;
+            chair.scale.setScalar(8);
+            chair.position.set(0, 0, -6);
+            scene.add(chair);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/painted_wooden_chair_02_4k.gltf/painted_wooden_chair_02_4k.gltf",
+          (gltf) => {
+            const chair = gltf.scene;
+            chair.scale.setScalar(8);
+            chair.position.set(0, 0, 6);
+            chair.rotation.y = Math.PI;
+            scene.add(chair);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/GothicBed_01_4k.gltf/GothicBed_01_4k.gltf",
+          (gltf) => {
+            const bed = gltf.scene;
+            bed.scale.setScalar(8);
+            bed.position.set(10, 0, -40);
+            bed.rotation.y = Math.PI / 2;
+            scene.add(bed);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/painted_wooden_nightstand_4k.gltf/painted_wooden_nightstand_4k.gltf",
+          (gltf) => {
+            const side_table = gltf.scene;
+            side_table.scale.setScalar(8);
+            side_table.position.set(5, 0, -30);
+            scene.add(side_table);
+          }
+        );
+
+        gltfLoader.load(
+          "models/room/painted_wooden_nightstand_4k.gltf/painted_wooden_nightstand_4k.gltf",
+          (gltf) => {
+            const side_table = gltf.scene;
+            side_table.scale.setScalar(8);
+            side_table.position.set(5, 0, -50);
+            scene.add(side_table);
+          }
+        );
+
+        // --- Renderer & ASCII ---
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        effect = new AsciiEffect(renderer, " .,&%$#@", {
+          invert: true,
+          resolution: 0.3,
+        });
+        effect.setSize(window.innerWidth, window.innerHeight);
+        effect.domElement.style.color = "white";
+        effect.domElement.style.backgroundColor = "black";
+        effect.domElement.style.fontFamily = '"Courier New", monospace';
+        effect.domElement.style.pointerEvents = "none";
+        document.body.appendChild(effect.domElement);
+
+        // --- Controls ---
+        controls = new PointerLockControls(camera, document.body);
+        document.body.addEventListener("click", () => {
+          controls.lock();
+        });
+        document.addEventListener("keydown", (e) => (keys[e.key] = true));
+        document.addEventListener("keyup", (e) => (keys[e.key] = false));
+
+        // Toggle ASCII on/off
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "a") asciiEnabled = !asciiEnabled;
+        });
+
+        window.addEventListener("resize", onWindowResize);
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        effect.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const speed = 0.4;
+        const yaw = controls.getObject();
+
+        // Manual yaw rotation via arrow keys
+        if (keys["ArrowLeft"]) yaw.rotation.y += 0.03;
+        if (keys["ArrowRight"]) yaw.rotation.y -= 0.03;
+
+        // Forward/backward movement
+        if (keys["ArrowUp"]) controls.moveForward(speed);
+        if (keys["ArrowDown"]) controls.moveForward(-speed);
+
+        // Render ASCII or normal
+        if (asciiEnabled) {
+          effect.render(scene, camera);
+          effect.domElement.style.display = "block";
+          renderer.domElement.style.display = "none";
+        } else {
+          renderer.render(scene, camera);
+          effect.domElement.style.display = "none";
+          renderer.domElement.style.display = "block";
+        }
+      }
+    </script>
+  </body>
+</html>

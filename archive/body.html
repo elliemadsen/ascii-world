@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASCII Image Viewer</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { AsciiEffect } from "three/addons/effects/AsciiEffect.js";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      let scene, camera, renderer, effect, controls;
+      let asciiEnabled = true;
+
+      // Your images
+      const imageNames = ["arm", "arm2", "neck", "statue", "stomach"];
+
+      init();
+      animate();
+
+      function init() {
+        // --- Scene ---
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+
+        // --- Camera ---
+        camera = new THREE.PerspectiveCamera(
+          60,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          200
+        );
+        camera.position.set(0, 0, 15);
+
+        // --- Renderer ---
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        // renderer.setPixelRatio(10);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // --- ASCII Effect (higher resolution) ---
+        effect = new AsciiEffect(renderer, " .,:$X%#&@", {
+          invert: true,
+          resolution: 0.3,
+          scale: 1.0,
+        });
+
+        // Smaller font → more ASCII detail
+        effect.domElement.style.fontSize = "3px";
+        effect.domElement.style.lineHeight = "3px";
+
+        effect.setSize(window.innerWidth, window.innerHeight);
+        effect.domElement.style.color = "white";
+        effect.domElement.style.backgroundColor = "black";
+        effect.domElement.style.fontFamily = '"Courier New", monospace';
+        document.body.appendChild(effect.domElement);
+
+        renderer.domElement.style.display = "none";
+
+        // --- Camera controls ---
+        controls = new OrbitControls(camera, effect.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.1;
+        controls.screenSpacePanning = true;
+        controls.enableZoom = true;
+        controls.zoomSpeed = 0.8;
+
+        // --- Load images ---e
+        loadImagePlanes(imageNames);
+
+        window.addEventListener("resize", onWindowResize);
+
+        // Toggle ASCII on/off
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "a") asciiEnabled = !asciiEnabled;
+        });
+      }
+
+      function loadImagePlanes(names) {
+        const loader = new THREE.TextureLoader();
+        const spacing = 5; // bigger spacing since images are bigger
+
+        names.forEach((name, i) => {
+          loader.load(
+            `body/${name}.jpg`,
+            (tex) => {
+              const aspect = tex.image.width / tex.image.height;
+
+              // Much larger images
+              const w = 6;
+              const h = 6 / aspect;
+
+              const geo = new THREE.PlaneGeometry(w, h);
+              const mat = new THREE.MeshBasicMaterial({ map: tex });
+              const mesh = new THREE.Mesh(geo, mat);
+
+              // Spread images horizontally
+              mesh.position.set((i - names.length / 2) * spacing, 0, 0);
+
+              // Face camera
+              mesh.lookAt(camera.position);
+
+              scene.add(mesh);
+            },
+            undefined,
+            () => console.warn(`Could not load body/${name}.jpg`)
+          );
+        });
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        effect.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+
+        if (asciiEnabled) {
+          effect.domElement.style.display = "block";
+          renderer.domElement.style.display = "none";
+          effect.render(scene, camera);
+        } else {
+          effect.domElement.style.display = "none";
+          renderer.domElement.style.display = "block";
+          renderer.render(scene, camera);
+        }
+      }
+    </script>
+  </body>
+</html>

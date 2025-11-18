@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASCII Outside World</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+        font-family: "Courier New", monospace;
+      }
+      #overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: black;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="overlay">Click to enter the ASCII world</div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
+      import { AsciiEffect } from "three/addons/effects/AsciiEffect.js";
+
+      let camera, scene, renderer, effect, controls;
+      const keys = {};
+      const velocity = new THREE.Vector3();
+
+      init();
+
+      function init() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+
+        // Camera
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        camera.position.set(0, 5, 30);
+
+        // --- Lighting ---
+        const ambient = new THREE.AmbientLight(0x222222);
+        scene.add(ambient);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+        sunLight.position.set(50, 100, -50);
+        scene.add(sunLight);
+
+        // Big sun mesh (purely visual)
+        const sunMesh = new THREE.Mesh(
+          new THREE.SphereGeometry(40, 16, 16),
+          new THREE.MeshBasicMaterial({ color: 0xffffff })
+        );
+        sunMesh.position.set(50, 100, -50);
+        scene.add(sunMesh);
+
+        // --- Terrain ---
+        const size = 400;
+        const segments = 100;
+        const terrainGeo = new THREE.PlaneGeometry(
+          size,
+          size,
+          segments,
+          segments
+        );
+        const pos = terrainGeo.attributes.position;
+
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i);
+          const y = pos.getY(i);
+          // gentle hills with random variation
+          const height =
+            Math.sin(x * 0.03) * Math.cos(y * 0.03) * 3 + Math.random() * 0.5;
+          pos.setZ(i, height);
+        }
+        terrainGeo.computeVertexNormals();
+
+        const terrainMat = new THREE.MeshPhongMaterial({
+          color: 0x888888, // grey
+          flatShading: true,
+          shininess: 10,
+        });
+        const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+        terrain.rotation.x = -Math.PI / 2;
+        scene.add(terrain);
+
+        // --- Trees (larger, visible) ---
+        const trunkMat = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
+        const leafMat = new THREE.MeshPhongMaterial({
+          color: 0xffffff,
+          flatShading: true,
+        });
+
+        for (let i = 0; i < 15; i++) {
+          const trunkHeight = 5 + Math.random() * 3;
+          const trunk = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.5, 0.5, trunkHeight),
+            trunkMat
+          );
+          const leaves = new THREE.Mesh(
+            new THREE.ConeGeometry(2.5, 6, 6),
+            leafMat
+          );
+          const x = (Math.random() - 0.5) * size * 0.8;
+          const z = (Math.random() - 0.5) * size * 0.8;
+          trunk.position.set(x, trunkHeight / 2, z);
+          leaves.position.set(x, trunkHeight + 3, z);
+          scene.add(trunk);
+          scene.add(leaves);
+        }
+
+        // --- Renderer + ASCII effect ---
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        effect = new AsciiEffect(renderer, " .,-~", { invert: true });
+        effect.setSize(window.innerWidth, window.innerHeight);
+        effect.domElement.style.color = "grey";
+        effect.domElement.style.backgroundColor = "black";
+        effect.domElement.style.fontFamily = '"Courier New", monospace';
+        document.body.appendChild(effect.domElement);
+
+        // --- Controls ---
+        controls = new PointerLockControls(camera, document.body);
+        const overlay = document.getElementById("overlay");
+        overlay.addEventListener("click", () => {
+          controls.lock();
+          overlay.style.display = "none";
+        });
+
+        document.addEventListener("keydown", (e) => (keys[e.key] = true));
+        document.addEventListener("keyup", (e) => (keys[e.key] = false));
+
+        // --- Animate loop ---
+        function animate() {
+          requestAnimationFrame(animate);
+
+          // Movement
+          velocity.set(0, 0, 0);
+          const speed = 0.4;
+          if (keys["ArrowUp"]) velocity.z -= speed;
+          if (keys["ArrowDown"]) velocity.z += speed;
+          if (keys["ArrowLeft"]) controls.getObject().rotation.y += 0.03;
+          if (keys["ArrowRight"]) controls.getObject().rotation.y -= 0.03;
+
+          controls.moveForward(-velocity.z);
+          controls.moveRight(velocity.x);
+
+          // Distance fade (darker far away)
+          scene.traverse((obj) => {
+            if (obj.isMesh && obj.material && obj.material.color) {
+              const dist = camera.position.distanceTo(obj.position);
+              const t = Math.min(Math.max((dist - 10) / 200, 0), 1);
+              const color = new THREE.Color().lerpColors(
+                new THREE.Color(0xffffff),
+                new THREE.Color(0x333333),
+                t
+              );
+              obj.material.color.copy(color);
+            }
+          });
+
+          effect.render(scene, camera);
+        }
+
+        window.addEventListener("resize", onWindowResize);
+        animate();
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        effect.setSize(window.innerWidth, window.innerHeight);
+      }
+    </script>
+  </body>
+</html>
