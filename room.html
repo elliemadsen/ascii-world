@@ -231,6 +231,13 @@
         document.addEventListener("keydown", (e) => (keys[e.key] = true));
         document.addEventListener("keyup", (e) => (keys[e.key] = false));
 
+        window.addEventListener("keydown", (e) => {
+          if (e.code === "Space") {
+            e.preventDefault();
+            window.location.href = "river.html";
+          }
+        });
+
         // Toggle ASCII on/off
         window.addEventListener("keydown", (e) => {
           if (e.key === "a") asciiEnabled = !asciiEnabled;
@@ -249,7 +256,7 @@
       function animate() {
         requestAnimationFrame(animate);
 
-        const speed = 0.4;
+        const speed = 0.2;
         const yaw = controls.getObject();
 
         // Manual yaw rotation via arrow keys
