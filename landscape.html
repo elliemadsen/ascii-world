@@ -27,13 +27,10 @@
       import { AsciiEffect } from "three/addons/effects/AsciiEffect.js";
       import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
       import { OBJLoader } from "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/OBJLoader.js";
-      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
       let camera, scene, renderer, effect, controls;
       const keys = {};
       let asciiEnabled = true;
-      // let mobile = false;
-      const mobile = navigator.maxTouchPoints > 0 && window.innerWidth <= 900;
 
       init();
       animate();
@@ -184,22 +181,7 @@
         document.body.appendChild(effect.domElement);
 
         // --- Controls ---
-
-        let controls;
-
-        if (mobile) {
-          // MOBILE → use OrbitControls (pinch + drag)
-          controls = new OrbitControls(camera, renderer.domElement);
-          controls.enableDamping = true;
-          controls.enablePan = true;
-          controls.enableZoom = true;
-          mobile = true;
-          console.log("mobile");
-        } else {
-          // DESKTOP → use PointerLockControls
-          controls = new PointerLockControls(camera, document.body);
-        }
-
+        controls = new PointerLockControls(camera, document.body);
         document.body.addEventListener("click", () => {
           controls.lock();
         });
@@ -231,10 +213,6 @@
 
       function animate() {
         requestAnimationFrame(animate);
-
-        if (mobile) {
-          controls.update();
-        }
 
         // --- Camera movement ---
         const speed = 0.4;
