@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>asciiwrld</title>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: "Courier New", monospace;
+        color: white;
+      }
+
+      .text {
+        position: absolute;
+        padding: 10px;
+        display: none;
+        font-size: 14px;
+        pointer-events: auto;
+        border-radius: 0px;
+        max-width: 300px;
+      }
+
+      .text a {
+        color: white;
+        text-decoration: underline;
+      }
+
+      .small {
+        font-size: x-small;
+      }
+
+      .tiny {
+        font-size: xx-small;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- <div id="fdskfjdkls" class="text">
+      hello <br />
+      <a href="scene2.html">go to another scene</a>
+    </div> -->
+
+    <div id="plant-a-tree" class="text">
+      plant a
+      <a href="#" onclick="event.preventDefault(); makeNewTree();">tree</a>
+    </div>
+
+    <div id="plant-a-star-seed" class="text">
+      plant a
+      <a href="#" onclick="event.preventDefault(); makeSeeds();">seed</a>
+      <br /><br /><br />
+      * . ` plant a
+      <a href="#" onclick="event.preventDefault(); makeStars();">star</a>
+    </div>
+
+    <div id="moon" class="text">
+      i'll see you on the dark side of the
+      <a href="#" onclick="event.preventDefault(); makeMoon();">moon</a>
+    </div>
+
+    <div id="dancing-horses" class="text">
+      bring on the dancing
+      <a href="#" onclick="event.preventDefault(); bringOnTheDancingHorses();"
+        >horses</a
+      >
+    </div>
+
+    <div id="dark-mode" class="text">
+      <div class="tiny">
+        i can
+        <a href="#" onclick="event.preventDefault(); changeColor();">change</a>
+      </div>
+
+      <br /><br /><br />
+      <div class="small">
+        . i can
+        <a href="#" onclick="event.preventDefault(); changeColor();">change</a>
+        `
+      </div>
+      <br /><br />
+
+      i can
+      <a href="#" onclick="event.preventDefault(); changeColor();">change</a>
+      <br /><br /><br />
+      <div class="tiny">
+        ~ i can
+        <a href="#" onclick="event.preventDefault(); changeColor();">change</a>
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

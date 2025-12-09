@@ -49,15 +49,15 @@
         "stomach.jpg",
         "tongue.jpg",
       ];
-      const imagesPath = "body";
+      const imagesPath = "../body";
       const WALL_GRID_ROWS = 3;
       const WALL_GRID_COLS = 3;
       const BOX_SIZE = 200; // large box: 200 x 200 x 200
       const PANEL_PADDING = 4; // spacing between panels (world units)
-      // ascii tuning (lower resolution -> more chars; scale affects char size)
-      const ASCII_OPTIONS = { invert: true, resolution: 0.32, scale: 1.2 };
       // pixel ratio multiplier to increase underlying render resolution for AsciiEffect
       const PIXEL_RATIO_MULT = Math.min(window.devicePixelRatio || 1, 2);
+
+      console.log("pixel ratio mult:", PIXEL_RATIO_MULT); // this is 2
 
       const keys = {};
       let asciiEnabled = true;
@@ -100,7 +100,7 @@
         // AsciiEffect
         effect = new AsciiEffect(renderer, " .,-;?%$#@", {
           invert: true,
-          resolution: 0.3,
+          resolution: 0.2,
         });
         effect.setSize(window.innerWidth, window.innerHeight);
         effect.domElement.style.color = "white";

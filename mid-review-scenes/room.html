@@ -85,7 +85,7 @@
         // objects in scene
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
-          "models/room/wooden_table_02_4k.gltf/wooden_table_02_4k.gltf",
+          "../models/room/wooden_table_02_4k.gltf/wooden_table_02_4k.gltf",
           (gltf) => {
             const table = gltf.scene;
             table.scale.setScalar(8);
@@ -95,7 +95,7 @@
         );
 
         gltfLoader.load(
-          "models/room/gothic_coffee_table_4k.gltf/gothic_coffee_table_4k.gltf",
+          "../models/room/gothic_coffee_table_4k.gltf/gothic_coffee_table_4k.gltf",
           (gltf) => {
             const table = gltf.scene;
             table.scale.setScalar(8);
@@ -105,7 +105,7 @@
         );
 
         gltfLoader.load(
-          "models/room/Sofa_01_4k.gltf/Sofa_01_4k.gltf",
+          "../models/room/Sofa_01_4k.gltf/Sofa_01_4k.gltf",
           (gltf) => {
             const sofa = gltf.scene;
             sofa.scale.setScalar(15);
@@ -115,7 +115,7 @@
         );
 
         gltfLoader.load(
-          "models/room/round_wooden_table_02_4k.gltf/round_wooden_table_02_4k.gltf",
+          "../models/room/round_wooden_table_02_4k.gltf/round_wooden_table_02_4k.gltf",
           (gltf) => {
             const table = gltf.scene;
             table.scale.setScalar(10);
@@ -125,7 +125,7 @@
         );
 
         // gltfLoader.load(
-        //   "models/ornate_mirror_01_4k.gltf/ornate_mirror_01_4k.gltf",
+        //   "../models/ornate_mirror_01_4k.gltf/ornate_mirror_01_4k.gltf",
         //   (gltf) => {
         //     const mirror = gltf.scene;
         //     mirror.scale.setScalar(15);
@@ -135,7 +135,7 @@
         // );
 
         gltfLoader.load(
-          "models/room/fancy_picture_frame_01_4k.gltf/fancy_picture_frame_01_4k.gltf",
+          "../models/room/fancy_picture_frame_01_4k.gltf/fancy_picture_frame_01_4k.gltf",
           (gltf) => {
             const picture = gltf.scene;
             picture.scale.setScalar(20);
@@ -145,7 +145,7 @@
         );
 
         gltfLoader.load(
-          "models/room/GreenChair_01_4k.gltf/GreenChair_01_4k.gltf",
+          "../models/room/GreenChair_01_4k.gltf/GreenChair_01_4k.gltf",
           (gltf) => {
             const sofa = gltf.scene;
             sofa.scale.setScalar(10);
@@ -156,7 +156,7 @@
         );
 
         gltfLoader.load(
-          "models/room/painted_wooden_chair_02_4k.gltf/painted_wooden_chair_02_4k.gltf",
+          "../models/room/painted_wooden_chair_02_4k.gltf/painted_wooden_chair_02_4k.gltf",
           (gltf) => {
             const chair = gltf.scene;
             chair.scale.setScalar(8);
@@ -166,7 +166,7 @@
         );
 
         gltfLoader.load(
-          "models/room/painted_wooden_chair_02_4k.gltf/painted_wooden_chair_02_4k.gltf",
+          "../models/room/painted_wooden_chair_02_4k.gltf/painted_wooden_chair_02_4k.gltf",
           (gltf) => {
             const chair = gltf.scene;
             chair.scale.setScalar(8);
@@ -177,7 +177,7 @@
         );
 
         gltfLoader.load(
-          "models/room/GothicBed_01_4k.gltf/GothicBed_01_4k.gltf",
+          "../models/room/GothicBed_01_4k.gltf/GothicBed_01_4k.gltf",
           (gltf) => {
             const bed = gltf.scene;
             bed.scale.setScalar(8);
@@ -188,7 +188,7 @@
         );
 
         gltfLoader.load(
-          "models/room/painted_wooden_nightstand_4k.gltf/painted_wooden_nightstand_4k.gltf",
+          "../models/room/painted_wooden_nightstand_4k.gltf/painted_wooden_nightstand_4k.gltf",
           (gltf) => {
             const side_table = gltf.scene;
             side_table.scale.setScalar(8);
@@ -198,7 +198,7 @@
         );
 
         gltfLoader.load(
-          "models/room/painted_wooden_nightstand_4k.gltf/painted_wooden_nightstand_4k.gltf",
+          "../models/room/painted_wooden_nightstand_4k.gltf/painted_wooden_nightstand_4k.gltf",
           (gltf) => {
             const side_table = gltf.scene;
             side_table.scale.setScalar(8);
@@ -214,7 +214,7 @@
 
         effect = new AsciiEffect(renderer, " .,&%$#@", {
           invert: true,
-          resolution: 0.3,
+          resolution: 0.2,
         });
         effect.setSize(window.innerWidth, window.innerHeight);
         effect.domElement.style.color = "white";

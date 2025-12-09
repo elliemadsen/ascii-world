@@ -75,7 +75,7 @@
 
         // --- Moon sphere with texture ---
         const loader = new THREE.TextureLoader();
-        loader.load("landscape/moon.jpg", (texture) => {
+        loader.load("../landscape/moon.jpg", (texture) => {
           const moonRadius = 20;
           const moonGeo = new THREE.SphereGeometry(moonRadius, 32, 32);
           const moonMat = new THREE.MeshStandardMaterial({
@@ -90,7 +90,7 @@
 
         // --- Terrain ---
         const terrainSize = 400;
-        loader.load("landscape/terrain.png", (texture) => {
+        loader.load("../landscape/terrain.png", (texture) => {
           const terrainGeo = new THREE.PlaneGeometry(terrainSize, terrainSize);
           const terrainMat = new THREE.MeshStandardMaterial({
             map: texture,
@@ -127,7 +127,7 @@
           const objLoader = new OBJLoader();
 
           objLoader.load(
-            "models/landscape/79-low-poly-tree/Low Poly Tree.obj",
+            "../models/landscape/79-low-poly-tree/Low Poly Tree.obj",
             (tree) => {
               tree.scale.setScalar(2);
               const x = (Math.random() - 0.5) * terrainSize * 0.8;
@@ -139,7 +139,7 @@
           );
 
           objLoader.load(
-            "models/landscape/TreeSketch_Tree1/Tree test.obj",
+            "../models/landscape/TreeSketch_Tree1/Tree test.obj",
             (tree) => {
               tree.scale.setScalar(3);
               const x = (Math.random() - 0.5) * terrainSize * 0.8;
@@ -152,7 +152,7 @@
           );
 
           objLoader.load(
-            "models/landscape/10445_Oak_Tree_v1/10445_Oak_Tree_v1_max2010_iteration-1.obj",
+            "../models/landscape/10445_Oak_Tree_v1/10445_Oak_Tree_v1_max2010_iteration-1.obj",
             (tree) => {
               tree.scale.setScalar(0.05);
               const x = (Math.random() - 0.5) * terrainSize * 0.8;
@@ -171,7 +171,7 @@
 
         effect = new AsciiEffect(renderer, " .,%#@", {
           invert: true,
-          resolution: 0.3,
+          resolution: 0.2,
         });
         effect.setSize(window.innerWidth, window.innerHeight);
         effect.domElement.style.color = "white";

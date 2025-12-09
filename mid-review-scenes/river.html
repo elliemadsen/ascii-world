@@ -138,7 +138,7 @@
           const objLoader = new OBJLoader();
 
           objLoader.load(
-            "models/landscape/79-low-poly-tree/Low Poly Tree.obj",
+            "../models/landscape/79-low-poly-tree/Low Poly Tree.obj",
             (tree) => {
               const riverCenterX = riverCurveX(z);
               const side = Math.random() < 0.5 ? -1 : 1;
@@ -154,7 +154,7 @@
           );
 
           objLoader.load(
-            "models/landscape/10445_Oak_Tree_v1/10445_Oak_Tree_v1_max2010_iteration-1.obj",
+            "../models/landscape/10445_Oak_Tree_v1/10445_Oak_Tree_v1_max2010_iteration-1.obj",
             (tree) => {
               const riverCenterX = riverCurveX(z);
               const side = Math.random() < 0.5 ? -1 : 1;
@@ -177,7 +177,7 @@
 
         effect = new AsciiEffect(renderer, " .,!%$#@", {
           invert: true,
-          resolution: 0.3,
+          resolution: 0.2,
         });
         effect.setSize(window.innerWidth, window.innerHeight);
         effect.domElement.style.color = "white";
