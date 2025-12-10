@@ -1,5 +1,7 @@
 // Horse.js
 
+// Sprites are from https://opengameart.org/content/pixel-horse
+
 import * as THREE from "three";
 
 export class Horse {
@@ -7,15 +9,15 @@ export class Horse {
     this.scene = options.scene;
     this.camera = options.camera;
 
-    this.frameCount = options.frameCount || 5;
-    this.speed = options.speed || 0.1;
+    this.frameCount = options.frameCount;
+    this.speed = options.speed || 0; // default stationary
     this.animSpeed = options.animSpeed || 0.1;
-    this.startX = options.startX || 100;
-    this.resetX = options.resetX || -100;
-    this.y = options.y || 5;
-    this.z = options.z || 0;
+    this.startX = options.startX;
+    this.resetX = options.resetX;
+    this.y = options.y;
+    this.z = options.z;
 
-    this.dir = options.dir || new THREE.Vector3(-1, 0, 0);
+    this.dir = options.dir;
 
     this.clock = new THREE.Clock();
     this.accumulator = 0;
@@ -25,7 +27,7 @@ export class Horse {
     this.texture.wrapS = THREE.RepeatWrapping;
     this.texture.repeat.x = 1 / this.frameCount;
 
-    const geo = new THREE.PlaneGeometry(10, 10);
+    const geo = new THREE.PlaneGeometry(8, 8);
     const mat = new THREE.MeshBasicMaterial({
       map: this.texture,
       transparent: true,
@@ -48,21 +50,27 @@ export class Horse {
       this.accumulator = 0;
     }
 
-    // move
-    this.mesh.position.addScaledVector(this.dir, this.speed);
+    // moving horse
+    if (this.speed != 0) {
+      // move
+      this.mesh.position.addScaledVector(this.dir, this.speed);
 
-    // loop
-    if (this.dir.x < 0 && this.mesh.position.x < this.resetX) {
-      this.mesh.position.x = this.startX;
+      // loop
+      if (this.dir.x > 0 && this.mesh.position.x > this.resetX) {
+        this.mesh.position.x = this.startX;
+      }
+
+      if (this.dir.x < 0 && this.mesh.position.x < this.resetX) {
+        this.mesh.position.x = this.startX;
+      }
+
+      // face direction
+      this.mesh.scale.x = -Math.sign(this.dir.x);
     }
-    if (this.dir.x > 0 && this.mesh.position.x > this.startX) {
-      this.mesh.position.x = this.resetX;
+    // stationary horse
+    else {
+      // face camera
+      this.mesh.lookAt(this.camera.position);
     }
-
-    // face direction
-    this.mesh.scale.x = -Math.sign(this.dir.x);
-
-    // face camera
-    // this.mesh.lookAt(this.camera.position);
   }
 }
